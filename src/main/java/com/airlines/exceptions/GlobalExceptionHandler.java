@@ -18,6 +18,15 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    /**
+     *
+     * @param ex
+     * @param headers
+     * @param status
+     * @param request
+     * @return
+     */
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
        String message = ex.getMessage();
@@ -68,10 +77,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).headers(headers).body(errors);
     }
     @ExceptionHandler(value=AirlineNotFoundException.class)
-    public ResponseEntity<Object> handlePropertyNotFound(AirlineNotFoundException ex){
+    public ResponseEntity<Object> handleAirlineNotFound(AirlineNotFoundException ex){
         String message = ex.getMessage();
         HttpHeaders headers =new HttpHeaders();
         headers.add("desc","Airline not found");
+        String path="";
+        //This is the body for the response entity
+        ApiErrors errors = new ApiErrors(LocalDateTime.now(),HttpStatus.NOT_FOUND,message,path);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(errors);
+    }
+
+    @ExceptionHandler(value=FlightNotFoundException.class)
+    public ResponseEntity<Object> handleFlightNotFound(FlightNotFoundException ex){
+        String message = ex.getMessage();
+        HttpHeaders headers =new HttpHeaders();
+        headers.add("desc","Flight not found");
+        String path="";
+        //This is the body for the response entity
+        ApiErrors errors = new ApiErrors(LocalDateTime.now(),HttpStatus.NOT_FOUND,message,path);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(errors);
+    }
+
+    @ExceptionHandler(value=PackageNotFoundException.class)
+    public ResponseEntity<Object> handlePackageNotFound(PackageNotFoundException ex){
+        String message = ex.getMessage();
+        HttpHeaders headers =new HttpHeaders();
+        headers.add("desc","Package not found");
         String path="";
         //This is the body for the response entity
         ApiErrors errors = new ApiErrors(LocalDateTime.now(),HttpStatus.NOT_FOUND,message,path);

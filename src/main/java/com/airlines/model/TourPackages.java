@@ -38,6 +38,14 @@ public class TourPackages {
     @JsonIgnore
     private Set<Airline> airlines;
 
+    /**
+     *
+     * @param packageName
+     * @param cost
+     * @param source
+     * @param destination
+     */
+
     public TourPackages(String packageName, int cost, String source, String destination) {
         this.packageName = packageName;
         this.cost = cost;

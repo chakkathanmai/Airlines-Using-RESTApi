@@ -31,6 +31,13 @@ public class Details {
     @Column(length = 18)
     private String country;
 
+    /**
+     *
+     * @param ranking
+     * @param owner
+     * @param yearOfOrigin
+     * @param country
+     */
     public Details(double ranking, String owner, int yearOfOrigin, String country) {
         this.ranking = ranking;
         this.owner = owner;

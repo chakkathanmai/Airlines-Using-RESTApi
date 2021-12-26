@@ -14,15 +14,14 @@ import java.util.List;
 @Repository
 public interface IFlightRepository extends JpaRepository<Flight,Integer> {
 
-   
-    Flight findByName(String name) throws FlightNotFoundException;
+    List<Flight> findByName(String name) throws FlightNotFoundException;
     List<Flight> findBySource(String source) throws FlightNotFoundException;
     List<Flight> findByDestination(String destination) throws FlightNotFoundException;
 
     @Query("from Flight f inner join f.facilities fs where f.name=?1 and fs.facilityName=?2")
-    Flight findByNameAndFacilities(String name,String facility) throws FlightNotFoundException;
+    List<Flight> findByNameFacility(String name,String facility) throws FlightNotFoundException;
     @Query("from Flight where source=?1 and destination=?2")
-    List<Flight> findBySourceAndDestination(String source,String destination) throws FlightNotFoundException;
+    List<Flight> findBySourceDest(String source,String destination) throws FlightNotFoundException;
     @Query("from Flight where flightId=?1 and name=?2")
     List<Flight> findByIdAndName(int flightId,String name) throws FlightNotFoundException;
     @Query("from Flight f inner join f.facilities fs where fs.facilityName=?1")

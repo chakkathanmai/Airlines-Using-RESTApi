@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Table(name = "airlines")
+
 public class Airline {
      @Id
      @Column(name="airlineid")
@@ -36,13 +37,21 @@ public class Airline {
      @JoinColumn(name="airlineid")
      private Set<Flight> flight;
 
-     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+     @ManyToMany(fetch = FetchType.EAGER)
      //@JsonIgnore
      @JoinTable(name = "airlines_packages",
              joinColumns = @JoinColumn(name = "airlineid"),
              inverseJoinColumns = @JoinColumn(name = "packageid"))
      private Set<TourPackages> packages;
 
+     /**
+      *
+      * @param name
+      * @param category
+      * @param details
+      * @param flight
+      * @param packages
+      */
      public Airline(String name, Category category, Details details, Set<Flight> flight, Set<TourPackages> packages) {
           this.name = name;
           this.category = category;

@@ -35,7 +35,13 @@ public class Flight {
     @JoinColumn(name="flightid")  //prevent creating a new junction/common table
     private List<Facilities> facilities;
 
-
+    /**
+     *
+     * @param name
+     * @param source
+     * @param destination
+     * @param facilities
+     */
     public Flight(String name, String source, String destination, List<Facilities> facilities) {
         this.name = name;
         this.source = source;

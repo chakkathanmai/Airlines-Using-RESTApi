@@ -25,7 +25,11 @@ public class Facilities {
     @Enumerated(EnumType.STRING)
     private FlightFacility facilityName;
     private  String description;
-
+    /**
+     *
+     * @param facilityName
+     * @param description
+     */
     public Facilities(FlightFacility facilityName, String description) {
         this.facilityName = facilityName;
         this.description = description;

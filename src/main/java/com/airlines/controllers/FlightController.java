@@ -16,12 +16,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("flight-api")
-public class FlightResponseController {
+public class FlightController {
 
     @Autowired
    private IFlightService flightService;
-   private Logger logger = LoggerFactory.getLogger(FlightResponseController.class);
+   private Logger logger = LoggerFactory.getLogger(FlightController.class);
 
+    /**
+     *
+     * @param flight
+     * @return
+     */
    @PostMapping("/flights")
    public ResponseEntity<Flight> addFlight(@RequestBody Flight flight){
        logger.debug("inside Add Flight method");
@@ -31,6 +36,12 @@ public class FlightResponseController {
        logger.info("Flight added"+flight1);
        return  ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(flight1);
     }
+
+    /**
+     *
+     * @param flight
+     * @return
+     */
     @PutMapping("/flights")
     public ResponseEntity<Void> updateFlight(@RequestBody Flight flight){
         HttpHeaders headers= new HttpHeaders();
@@ -38,6 +49,12 @@ public class FlightResponseController {
         flightService.updateFlight(flight);
         return  ResponseEntity.status(HttpStatus.ACCEPTED).headers(headers).build();
     }
+
+    /**
+     *
+     * @param flightId
+     * @return
+     */
     @DeleteMapping("flights/{flightId}")
     public  ResponseEntity<String> deleteFlight(@PathVariable("flightId") int flightId){
         HttpHeaders headers= new HttpHeaders();
@@ -45,6 +62,11 @@ public class FlightResponseController {
         flightService.deleteFlight(flightId);
         return   ResponseEntity.status(HttpStatus.ACCEPTED).headers(headers).body("deleted");
     }
+
+    /**
+     *
+     * @return
+     */
     @GetMapping("/flights")
     public ResponseEntity<List<Airline>>  getAll(){
         HttpHeaders headers= new HttpHeaders();
@@ -55,7 +77,13 @@ public class FlightResponseController {
         return flightResponse;
     }
 
-    @GetMapping("flights/id/{flightId}")
+    /**
+     *
+     * @param flightId
+     * @return
+     * @throws FlightNotFoundException
+     */
+    @GetMapping("flight/id/{flightId}")
     public ResponseEntity<Flight> getById(@PathVariable("flightId") int flightId) throws FlightNotFoundException{
         logger.debug("inside get Airlines by Id method");
         HttpHeaders headers= new HttpHeaders();
@@ -64,29 +92,58 @@ public class FlightResponseController {
         logger.info("Get one Flight  "+flight);
         return  ResponseEntity.ok().headers(headers).body(flight);
     }
-    @GetMapping("flights/name/{name}")
-    public ResponseEntity<Flight> getByName(@PathVariable("name") String name) throws FlightNotFoundException{
+
+    /**
+     *
+     * @param name
+     * @return
+     * @throws FlightNotFoundException
+     */
+    @GetMapping("flight/name/{name}")
+    public ResponseEntity<List<Flight>> getByName(@PathVariable("name") String name) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
         headers.add("desc","Getting Flight by name");
-       Flight flight =flightService.getByName(name);
-        return ResponseEntity.ok().headers(headers).body(flight);
-    }
-    @GetMapping("flight/name/{name}/facility/{facility}")
-    public ResponseEntity<Flight> getByNameAndFacilities(@PathVariable("name")String name,@PathVariable("facility")String facility) throws FlightNotFoundException{
-        HttpHeaders headers =new HttpHeaders();
-        headers.add("desc","Getting Flight by name and facility");
-        Flight flight =flightService.getByNameAndFacilities(name, facility);
+       List<Flight> flight =flightService.getByName(name);
         return ResponseEntity.ok().headers(headers).body(flight);
     }
 
+    /**
+     *
+     * @param name
+     * @param facility
+     * @return
+     * @throws FlightNotFoundException
+     */
+    @GetMapping("flight/name/{name}/facility/{facility}")
+    public ResponseEntity<List<Flight>> getByNameFacility(@PathVariable("name")String name,@PathVariable("facility")String facility) throws FlightNotFoundException{
+        HttpHeaders headers =new HttpHeaders();
+        headers.add("desc","Getting Flight by name and facility");
+        List<Flight> flight =flightService.getByNameFacility(name, facility);
+        return ResponseEntity.ok().headers(headers).body(flight);
+    }
+
+    /**
+     *
+     * @param flightId
+     * @param name
+     * @return
+     * @throws FlightNotFoundException
+     */
 
     @GetMapping("flights/id/{id}/name/{name}")
     public ResponseEntity<List<Flight>> getByIdAndName(@PathVariable("id") int flightId,@PathVariable("name") String name) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
         headers.add("desc","Getting Flight by FlightId and name");
-        List<Flight> flights =flightService.getByIdAndName(flightId, name);
+        List<Flight> flights =flightService.getByIdName(flightId, name);
         return ResponseEntity.ok().headers(headers).body(flights);
     }
+
+    /**
+     *
+     * @param facility
+     * @return
+     * @throws FlightNotFoundException
+     */
     @GetMapping("flights/facility/{facility}")
     public ResponseEntity<List<Flight>> getByFacility(@PathVariable("facility") String facility) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
@@ -94,6 +151,13 @@ public class FlightResponseController {
         List<Flight> flights =flightService.getByFacility(facility);
         return ResponseEntity.ok().headers(headers).body(flights);
     }
+
+    /**
+     *
+     * @param source
+     * @return
+     * @throws FlightNotFoundException
+     */
     @GetMapping("flights/source/{source}")
     public ResponseEntity<List<Flight>> getBySource(@PathVariable("source") String source) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
@@ -101,6 +165,13 @@ public class FlightResponseController {
         List<Flight> flights =flightService.getBySource(source);
         return ResponseEntity.ok().headers(headers).body(flights);
     }
+
+    /**
+     *
+     * @param destination
+     * @return
+     * @throws FlightNotFoundException
+     */
     @GetMapping("flights/destination/{destination}")
     public ResponseEntity<List<Flight>> getByDestination(@PathVariable("destination") String destination) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
@@ -108,22 +179,46 @@ public class FlightResponseController {
         List<Flight> flights =flightService.getByDestination(destination);
         return ResponseEntity.ok().headers(headers).body(flights);
     }
+
+    /**
+     *
+     * @param source
+     * @param destination
+     * @return
+     * @throws FlightNotFoundException
+     */
     @GetMapping("flights/source/{source}/destinations/{destination}")
-    public ResponseEntity<List<Flight>> getBySourceAndDestination(@PathVariable("source") String source,@PathVariable("destination") String destination) throws FlightNotFoundException{
+    public ResponseEntity<List<Flight>> getBySourceDestination(@PathVariable("source") String source,@PathVariable("destination") String destination) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
         headers.add("desc","Getting Flights by destination");
         List<Flight> flights =flightService.getByDestination(destination);
         return ResponseEntity.ok().headers(headers).body(flights);
 
     }
+
+    /**
+     *
+     * @param source
+     * @param facility
+     * @return
+     * @throws FlightNotFoundException
+     */
     @GetMapping("flights/source/{source}/facility/{facility}")
     public ResponseEntity<List<Flight>> getBySourceAndFacility(@PathVariable("source") String source,@PathVariable("facility") String facility) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
         headers.add("desc","Getting Flights by source and facility");
-        List<Flight> flights =flightService.getBySourceAndFacility(source, facility);
+        List<Flight> flights =flightService.getBySourceFacility(source, facility);
         return ResponseEntity.ok().headers(headers).body(flights);
     }
 
+    /**
+     *
+     * @param source
+     * @param destination
+     * @param facility
+     * @return
+     * @throws FlightNotFoundException
+     */
     @GetMapping("flights/source/{source}/destination/{destination}/facility/{facility}")
     public ResponseEntity<List<Flight>> getBySourDesFacility(@PathVariable("source") String source,@PathVariable("destination") String destination,@PathVariable("facility") String facility) throws FlightNotFoundException{
         HttpHeaders headers =new HttpHeaders();
